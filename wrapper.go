@@ -12,6 +12,11 @@ type Client struct {
 	client *statsd.Client
 }
 
+// New returns a new instance of the convenient ddwrapper's Client
+func New(client *statsd.Client) *Client {
+	return &Client{client: client}
+}
+
 // Gauge measures the value of a metric at a particular time.
 func (c *Client) Gauge(name string, value float64, tags []string, rate float64) error {
 	return c.client.Gauge(name, value, Tags(tags).Pair(), rate)
