@@ -1,5 +1,7 @@
 package ddwrapper
 
+import "strings"
+
 type Tags []string
 
 func (t Tags) Pair() []string {
@@ -9,7 +11,7 @@ func (t Tags) Pair() []string {
 	}
 	tag := make([]string, len(t)/2)
 	for i := 0; i < len(t)/2; i++ {
-		tag[i] = t[i*2] + ":" + t[i*2+1]
+		tag[i] = strings.Join([]string{t[i*2], t[i*2+1]}, ":")
 	}
 	return tag
 }
