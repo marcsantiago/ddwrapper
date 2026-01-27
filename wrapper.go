@@ -3,7 +3,7 @@ package ddwrapper
 import (
 	"time"
 
-	"github.com/DataDog/datadog-go/statsd"
+	"github.com/DataDog/datadog-go/v5/statsd"
 )
 
 var _ ExtendedClientInterface = (*Client)(nil)
@@ -27,6 +27,16 @@ func (c *Client) GaugeFixedRate(name string, value float64, tags []string) error
 	return c.client.Gauge(name, value, Tags(tags).Pair(), 1)
 }
 
+// GaugeWithTimestamp measures the value of a metric at a given time.
+// BETA - Please contact our support team for more information to use this feature: https://www.datadoghq.com/support/
+// The value will bypass any aggregation on the client side and agent side, this is
+// useful when sending points in the past.
+//
+// Minimum Datadog Agent version: 7.40.0
+func (c *Client) GaugeWithTimestamp(name string, value float64, tags []string, rate float64, timestamp time.Time) error {
+	return c.client.GaugeWithTimestamp(name, value, tags, rate, timestamp)
+}
+
 // Count tracks how many times something happened per second.
 func (c *Client) Count(name string, value int64, tags []string, rate float64) error {
 	return c.client.Count(name, value, Tags(tags).Pair(), rate)
@@ -35,6 +45,16 @@ func (c *Client) Count(name string, value int64, tags []string, rate float64) er
 // CountFixedRate tracks how many times something happened per second. Rate is fixed to 1.
 func (c *Client) CountFixedRate(name string, value int64, tags []string) error {
 	return c.client.Count(name, value, Tags(tags).Pair(), 1)
+}
+
+// CountWithTimestamp tracks how many times something happened at the given second.
+// BETA - Please contact our support team for more information to use this feature: https://www.datadoghq.com/support/
+// The value will bypass any aggregation on the client side and agent side, this is
+// useful when sending points in the past.
+//
+// Minimum Datadog Agent version: 7.40.0
+func (c *Client) CountWithTimestamp(name string, value int64, tags []string, rate float64, timestamp time.Time) error {
+	return c.client.CountWithTimestamp(name, value, tags, rate, timestamp)
 }
 
 // Histogram tracks the statistical distribution of a set of values on each host.
@@ -143,7 +163,12 @@ func (c *Client) Flush() error {
 	return c.client.Flush()
 }
 
-// SetWriteTimeout allows the user to set a custom write timeout.
-func (c *Client) SetWriteTimeout(dur time.Duration) error {
-	return c.client.SetWriteTimeout(dur)
+// IsClosed returns if the client has been closed.
+func (c *Client) IsClosed() bool {
+	return c.client.IsClosed()
+}
+
+// GetTelemetry return the telemetry metrics for the client since it started.
+func (c *Client) GetTelemetry() statsd.Telemetry {
+	return c.client.GetTelemetry()
 }
