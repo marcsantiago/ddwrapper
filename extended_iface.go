@@ -3,7 +3,7 @@ package ddwrapper
 import (
 	"time"
 
-	"github.com/DataDog/datadog-go/statsd"
+	"github.com/DataDog/datadog-go/v5/statsd"
 )
 
 type ExtendedClientInterface interface {
